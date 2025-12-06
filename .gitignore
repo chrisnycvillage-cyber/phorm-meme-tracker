@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Convex generated files (optional - can include if you want)
+# convex/_generated/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+.vercel

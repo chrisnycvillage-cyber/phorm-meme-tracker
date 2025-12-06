@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1st Phorm • Meme Seeding Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Convex Browser Client -->
+    <script src="https://unpkg.com/convex/dist/browser.bundle.js"></script>
+    
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --bg-card-hover: #22222e;
+            --accent-primary: #ff3d00;
+            --accent-secondary: #ff6d00;
+            --accent-glow: rgba(255, 61, 0, 0.3);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #666680;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --success: #00d97e;
+            --warning: #ffc107;
+            --danger: #ff4757;
+            --blue: #4a90d9;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .bg-gradient {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 61, 0, 0.15), transparent),
+                radial-gradient(ellipse 60% 40% at 100% 0%, rgba(255, 109, 0, 0.1), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .logo h1 { font-size: 22px; font-weight: 700; }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: var(--bg-card);
+        }
+
+        .connection-status.connected { color: var(--success); }
+        .connection-status.connecting { color: var(--warning); }
+        .connection-status.disconnected { color: var(--danger); }
+
+        .connection-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .connection-status.connected .connection-dot {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 217, 126, 0.1);
+            border: 1px solid rgba(0, 217, 126, 0.2);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--success);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid var(--blue);
+            display: inline-block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .stat-box .label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--blue);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-box .label svg { width: 14px; height: 14px; fill: currentColor; }
+        .stat-box .value { font-size: 32px; font-weight: 700; line-height: 1; }
+
+        .data-status-banner {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .data-status-banner.warning { border-color: rgba(255, 193, 7, 0.4); background: rgba(255, 193, 7, 0.05); }
+        .data-status-banner.error { border-color: rgba(255, 71, 87, 0.4); background: rgba(255, 71, 87, 0.05); }
+
+        .data-status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .data-status-item .icon { font-size: 16px; }
+        .data-status-item .label { color: var(--text-muted); }
+        .data-status-item .value { font-weight: 600; }
+        .data-status-item.warning .value { color: var(--warning); }
+        .data-status-item.error .value { color: var(--danger); }
+        .data-status-item.success .value { color: var(--success); }
+        
+        .info-tooltip {
+            cursor: help;
+            color: var(--text-muted);
+            margin-left: 4px;
+            font-size: 12px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .info-tooltip:hover { opacity: 1; }
+
+        .progress-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .progress-title { font-size: 16px; font-weight: 600; }
+        .progress-stats { display: flex; gap: 24px; }
+        .progress-stat { text-align: right; }
+        .progress-stat .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+        .progress-stat .value { font-size: 18px; font-weight: 700; color: var(--accent-primary); }
+
+        .progress-bar-container {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 100px;
+            width: 0%;
+            transition: width 1s ease;
+        }
+
+        .progress-markers {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .progress-markers .target { color: var(--accent-primary); font-weight: 600; }
+
+        .posts-section { margin-top: 32px; }
+
+        .posts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .post-count { font-size: 13px; color: var(--text-muted); }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .post-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .post-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 61, 0, 0.3);
+        }
+
+        .post-card.no-stats { border-color: rgba(255, 193, 7, 0.3); }
+        .post-card.restricted { border-color: rgba(156, 39, 176, 0.3); }
+        .post-card.pending { opacity: 0.7; }
+
+        .post-rank {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            z-index: 5;
+        }
+
+        .post-thumbnail {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9/16;
+            max-height: 300px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            overflow: hidden;
+        }
+
+        .post-thumbnail img,
+        .post-thumbnail video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .post-thumbnail video {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 2;
+        }
+
+        .post-card:hover .post-thumbnail video {
+            opacity: 1;
+        }
+
+        .post-thumbnail .placeholder {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text-muted);
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            z-index: 1;
+        }
+
+        .post-thumbnail .placeholder svg { width: 40px; height: 40px; opacity: 0.4; }
+        
+        .post-thumbnail.no-thumb img { display: none; }
+        .post-thumbnail.no-thumb .placeholder { display: flex !important; }
+
+        .post-thumbnail .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 56px;
+            height: 56px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .post-thumbnail .play-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+            margin-left: 4px;
+        }
+
+        .post-card:hover .post-thumbnail .play-icon {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .post-thumbnail .hover-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 2;
+        }
+
+        .post-card:hover .post-thumbnail .hover-overlay {
+            opacity: 1;
+        }
+
+        .post-thumbnail .click-hint {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 61, 0, 0.9);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 4;
+            white-space: nowrap;
+        }
+
+        .post-card:hover .post-thumbnail .click-hint {
+            opacity: 1;
+        }
+
+        .post-thumbnail .no-media-badge {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(255, 193, 7, 0.9);
+            color: #000;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            text-align: center;
+            z-index: 4;
+        }
+
+        .post-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .post-badge svg { width: 12px; height: 12px; }
+
+        .stats-badge {
+            position: absolute;
+            top: 45px;
+            left: 10px;
+            right: 10px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .stats-badge.warning { background: rgba(255, 193, 7, 0.95); color: #000; }
+        .stats-badge.pending { background: rgba(74, 144, 217, 0.95); color: #fff; }
+        .stats-badge.restricted { background: rgba(156, 39, 176, 0.95); color: #fff; }
+
+        .post-info { padding: 14px; }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .post-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 2px solid var(--bg-card-hover);
+        }
+
+        .post-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-avatar .avatar-fallback {
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .post-username {
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .post-username::before { content: '@'; color: var(--accent-primary); }
+
+        .post-caption {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: 30px;
+        }
+
+        .post-caption:empty {
+            display: none;
+        }
+
+        .post-stats { display: flex; gap: 16px; }
+
+        .post-stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+        }
+
+        .post-stat svg { width: 14px; height: 14px; color: var(--text-muted); }
+        .post-stat .value { font-weight: 600; }
+        .post-stat.views .value { color: var(--accent-primary); }
+        .post-stat.missing .value { color: var(--text-muted); opacity: 0.5; }
+
+        .admin-section {
+            margin-top: 32px;
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .admin-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .admin-btn:hover { background: var(--bg-card-hover); border-color: var(--accent-primary); }
+        .admin-btn.primary { background: var(--accent-primary); border-color: var(--accent-primary); }
+        .admin-btn.primary:hover { background: var(--accent-secondary); }
+        .admin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        footer {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--text-muted);
+            border-radius: 50%;
+            border-top-color: var(--accent-primary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .stat-box .value { font-size: 24px; }
+            .posts-grid { grid-template-columns: 1fr; }
+            .header-right { flex-direction: column; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">1P</div>
+                <h1>1st Phorm • Meme Seeding</h1>
+            </div>
+            <div class="header-right">
+                <div class="connection-status connecting" id="connectionStatus">
+                    <div class="connection-dot"></div>
+                    <span id="connectionText">Connecting...</span>
+                </div>
+                <div class="live-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="12" r="10"/>
+                    </svg>
+                    Real-time
+                </div>
+            </div>
+        </header>
+
+        <div class="data-status-banner" id="dataStatusBanner">
+            <div class="data-status-item">
+                <span class="icon">⚡</span>
+                <span class="label">Backend:</span>
+                <span class="value" id="dataSource">Convex</span>
+            </div>
+            <div class="data-status-item" id="lastScrapeStatus">
+                <span class="icon">🕐</span>
+                <span class="label">Last Scrape:</span>
+                <span class="value" id="lastScrapeValue">--</span>
+            </div>
+            <div class="data-status-item" id="missingStatsStatus">
+                <span class="icon">📊</span>
+                <span class="label">Stats Coverage:</span>
+                <span class="value" id="missingStatsValue">--</span>
+                <span class="info-tooltip" title="🔒 Restricted videos have hidden metrics on Instagram but are still getting views">ⓘ</span>
+            </div>
+        </div>
+
+        <h2 class="section-title">Campaign Analytics</h2>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="label">
+                    <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                    Total Views
+                </div>
+                <div class="value" id="totalViews">--</div>
+            </div>
+            <div class="stat-box">
+                <div class="label">
+                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    Total Likes
+                </div>
+                <div class="value" id="totalLikes">--</div>
+            </div>
+            <div class="stat-box">
+                <div class="label">
+                    <svg viewBox="0 0 24 24"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
+                    Total Comments
+                </div>
+                <div class="value" id="totalComments">--</div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="label">
+                    <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+                    Total Shares
+                </div>
+                <div class="value" id="totalShares">--</div>
+            </div>
+            <div class="stat-box">
+                <div class="label">
+                    <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+                    Engagement Rate
+                </div>
+                <div class="value" id="engagementRate">--</div>
+            </div>
+            <div class="stat-box">
+                <div class="label">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    Total Posts
+                </div>
+                <div class="value" id="livePosts">--</div>
+            </div>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-header">
+                <span class="progress-title">Progress to Campaign Target</span>
+                <div class="progress-stats">
+                    <div class="progress-stat">
+                        <div class="label">Current</div>
+                        <div class="value" id="currentViews">--</div>
+                    </div>
+                    <div class="progress-stat">
+                        <div class="label">Target</div>
+                        <div class="value">10M</div>
+                    </div>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-markers">
+                <span>0</span>
+                <span>2.5M</span>
+                <span>5M</span>
+                <span>7.5M</span>
+                <span class="target">10M Target</span>
+            </div>
+        </div>
+
+        <div class="posts-section">
+            <div class="posts-header">
+                <h2 class="section-title">Live Posts</h2>
+                <span class="post-count" id="postCount">Loading...</span>
+            </div>
+            <div class="posts-grid" id="postsGrid">
+                <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top: 16px; color: var(--text-muted);">Connecting to Convex...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Controls -->
+        <div class="admin-section" id="adminSection" style="display: none;">
+            <h2 class="section-title">Admin Controls</h2>
+            
+            <div style="margin-top: 16px; margin-bottom: 16px; padding: 12px; background: var(--bg-secondary); border-radius: 8px; font-size: 12px;">
+                <strong>Setup Steps:</strong>
+                <ol style="margin: 8px 0 0 20px; color: var(--text-secondary);">
+                    <li>Seed posts to database (loads all IG URLs)</li>
+                    <li>Test Apify connection (verify API token)</li>
+                    <li>Run Instagram scrape (fetches real stats)</li>
+                </ol>
+            </div>
+            
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <button class="admin-btn" onclick="seedPosts()" id="seedBtn">
+                    📥 Seed Posts to DB
+                </button>
+                <button class="admin-btn" onclick="testApify()" id="testBtn">
+                    🔌 Test Apify Connection
+                </button>
+                <button class="admin-btn primary" onclick="triggerScrape()" id="scrapeBtn">
+                    🔄 Run Instagram Scrape
+                </button>
+                <button class="admin-btn" onclick="viewScrapeHistory()">
+                    📊 View Scrape History
+                </button>
+                <button class="admin-btn" onclick="getLastResults()">
+                    🔍 View Last Results
+                </button>
+            </div>
+            <div id="adminStatus" style="margin-top: 12px; padding: 12px; background: var(--bg-secondary); border-radius: 8px; display: none;"></div>
+        </div>
+
+        <footer>
+            <p>1st Phorm Meme Seeding Campaign • Powered by Convex + Apify</p>
+            <p style="margin-top: 4px;">Real-time updates • Scrapes every 6 hours</p>
+        </footer>
+    </div>
+
+    <script>
+        // =====================================================
+        // CONVEX CONFIGURATION
+        // =====================================================
+        const CONVEX_URL = 'https://dusty-chinchilla-323.convex.cloud';
+        
+        const TARGET_VIEWS = 10000000;
+        
+        // State
+        let convexClient = null;
+        let posts = [];
+        let stats = null;
+        let latestJob = null;
+
+        // =====================================================
+        // CONVEX CLIENT SETUP
+        // =====================================================
+        function initConvex() {
+            if (!CONVEX_URL) {
+                showError("Convex not configured. Set CONVEX_URL after deploying.");
+                return;
+            }
+
+            try {
+                // Try different ways to access ConvexClient based on bundle version
+                const ConvexClient = window.Convex?.ConvexClient || window.ConvexClient || window.convex?.ConvexClient;
+                
+                if (!ConvexClient) {
+                    throw new Error("ConvexClient not found. Check that the Convex script loaded.");
+                }
+                
+                convexClient = new ConvexClient(CONVEX_URL);
+                
+                updateConnectionStatus('connecting');
+
+                // Subscribe to posts (real-time updates!)
+                convexClient.onUpdate("posts:getAllPosts", {}, (result) => {
+                    console.log("Posts updated:", result.length);
+                    posts = result;
+                    renderPosts();
+                    updateStats();
+                    updateConnectionStatus('connected');
+                });
+
+                // Subscribe to stats
+                convexClient.onUpdate("posts:getCampaignStats", {}, (result) => {
+                    console.log("Stats updated:", result);
+                    stats = result;
+                    updateStatsDisplay();
+                });
+
+                // Subscribe to latest scrape job
+                convexClient.onUpdate("posts:getLatestScrapeJob", {}, (result) => {
+                    latestJob = result;
+                    updateScrapeStatus();
+                });
+
+            } catch (error) {
+                console.error("Convex init error:", error);
+                showError("Failed to connect to Convex: " + error.message);
+            }
+        }
+
+        function updateConnectionStatus(status) {
+            const el = document.getElementById('connectionStatus');
+            const text = document.getElementById('connectionText');
+            
+            el.className = 'connection-status ' + status;
+            
+            switch(status) {
+                case 'connected':
+                    text.textContent = 'Connected';
+                    break;
+                case 'connecting':
+                    text.textContent = 'Connecting...';
+                    break;
+                case 'disconnected':
+                    text.textContent = 'Disconnected';
+                    break;
+            }
+        }
+
+        function showError(message) {
+            const grid = document.getElementById('postsGrid');
+            grid.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--danger);">
+                    <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+                    <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--danger);">Configuration Required</div>
+                    <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px; max-width: 400px; margin-left: auto; margin-right: auto;">${message}</div>
+                    <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; text-align: left; font-family: monospace; font-size: 12px;">
+                        <p style="margin-bottom: 8px;">1. Run: <span style="color: var(--accent-primary);">npx convex dev</span></p>
+                        <p style="margin-bottom: 8px;">2. Copy your deployment URL</p>
+                        <p>3. Set CONVEX_URL in this file</p>
+                    </div>
+                </div>
+            `;
+            updateConnectionStatus('disconnected');
+        }
+
+        // =====================================================
+        // RENDERING
+        // =====================================================
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toLocaleString();
+        }
+
+        function updateStats() {
+            if (!posts.length) return;
+
+            const totalViews = posts.reduce((sum, p) => sum + (p.views || 0), 0);
+            const totalLikes = posts.reduce((sum, p) => sum + (p.likes || 0), 0);
+            const totalComments = posts.reduce((sum, p) => sum + (p.comments || 0), 0);
+            const totalShares = posts.reduce((sum, p) => sum + (p.shares || 0), 0);
+            const postsWithStats = posts.filter(p => p.views && p.views > 0).length;
+
+            document.getElementById('totalViews').textContent = formatNumber(totalViews);
+            document.getElementById('totalLikes').textContent = formatNumber(totalLikes);
+            document.getElementById('totalComments').textContent = formatNumber(totalComments);
+            document.getElementById('totalShares').textContent = formatNumber(totalShares);
+            document.getElementById('livePosts').textContent = posts.length;
+            document.getElementById('currentViews').textContent = formatNumber(totalViews);
+            const restrictedCount = posts.filter(p => p.lastScrapedAt && p.lastScrapedAt > 0 && (!p.views || p.views === 0)).length;
+            const restrictedText = restrictedCount > 0 ? ` • ${restrictedCount} restricted` : '';
+            document.getElementById('postCount').textContent = `${posts.length} posts${restrictedText} • Sorted by views`;
+
+            const engagementRate = totalViews > 0 
+                ? ((totalLikes + totalComments + totalShares) / totalViews * 100).toFixed(2) + '%'
+                : '0%';
+            document.getElementById('engagementRate').textContent = engagementRate;
+
+            // Progress bar
+            const progressPercent = Math.min((totalViews / TARGET_VIEWS) * 100, 100);
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+
+            // Stats coverage
+            const scrapedPosts = posts.filter(p => p.lastScrapedAt && p.lastScrapedAt > 0);
+            const restrictedPosts = scrapedPosts.filter(p => !p.views || p.views === 0);
+            const coverage = posts.length > 0 ? Math.round((postsWithStats / posts.length) * 100) : 0;
+            const missingEl = document.getElementById('missingStatsStatus');
+            const missingValue = document.getElementById('missingStatsValue');
+            
+            if (coverage === 100) {
+                missingEl.className = 'data-status-item success';
+                missingValue.textContent = '100% ✓';
+            } else if (coverage === 0 && scrapedPosts.length === 0) {
+                missingEl.className = 'data-status-item warning';
+                missingValue.textContent = `Awaiting scrape`;
+            } else {
+                const restrictedCount = restrictedPosts.length;
+                if (restrictedCount > 0) {
+                    missingEl.className = 'data-status-item';
+                    missingValue.textContent = `${postsWithStats}/${posts.length} (${restrictedCount} 🔒)`;
+                } else {
+                    missingEl.className = 'data-status-item';
+                    missingValue.textContent = `${postsWithStats}/${posts.length} (${coverage}%)`;
+                }
+            }
+        }
+
+        function updateStatsDisplay() {
+            if (!stats) return;
+            // Stats are calculated from posts, so this is mainly for last scrape time
+        }
+
+        function updateScrapeStatus() {
+            const value = document.getElementById('lastScrapeValue');
+            
+            if (!latestJob) {
+                value.textContent = 'Never';
+                return;
+            }
+
+            const time = latestJob.completedAt || latestJob.startedAt;
+            if (time) {
+                const date = new Date(time);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                const diffMins = Math.floor(diffMs / (1000 * 60));
+
+                if (latestJob.status === 'running') {
+                    value.textContent = 'Running...';
+                    document.getElementById('lastScrapeStatus').className = 'data-status-item warning';
+                } else if (diffHours > 0) {
+                    value.textContent = `${diffHours}h ago`;
+                } else {
+                    value.textContent = `${diffMins}m ago`;
+                }
+
+                if (latestJob.status === 'failed') {
+                    document.getElementById('lastScrapeStatus').className = 'data-status-item error';
+                }
+            }
+        }
+
+        function renderPosts() {
+            const grid = document.getElementById('postsGrid');
+            
+            if (!posts.length) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; background: var(--bg-card); border-radius: 12px;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">📭</div>
+                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">No Posts Yet</div>
+                        <div style="color: var(--text-muted); font-size: 13px;">Click "Seed Posts to DB" in Admin Controls to add posts</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort by views (highest first)
+            const sortedPosts = [...posts].sort((a, b) => (b.views || 0) - (a.views || 0));
+
+            grid.innerHTML = sortedPosts.map((post, index) => {
+                const hasStats = post.views && post.views > 0;
+                const isPending = post.status === 'pending';
+                const hasVideo = !!post.videoUrl;
+                const hasThumbnail = !!post.thumbnailUrl;
+                
+                let statusBadge = '';
+                const wasScraped = post.lastScrapedAt && post.lastScrapedAt > 0;
+                if (isPending) {
+                    statusBadge = '<div class="stats-badge pending">⏳ PENDING SCRAPE</div>';
+                } else if (!hasStats && wasScraped) {
+                    // Post was scraped but has no stats - it's restricted
+                    statusBadge = '<div class="stats-badge restricted">🔒 RESTRICTED</div>';
+                } else if (!hasStats) {
+                    statusBadge = '<div class="stats-badge warning">⚠️ AWAITING DATA</div>';
+                }
+
+                // Build the media content
+                let mediaContent = '';
+                
+                if (hasThumbnail) {
+                    mediaContent += `<img src="${post.thumbnailUrl}" alt="Thumbnail" loading="lazy" 
+                        onerror="this.style.display='none'; this.parentElement.querySelector('.placeholder').style.display='flex';"
+                        crossorigin="anonymous">`;
+                    mediaContent += `<div class="hover-overlay"></div>`;
+                    mediaContent += `<div class="play-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>`;
+                    mediaContent += `<div class="click-hint">▶ Watch on Instagram</div>`;
+                    // Hidden placeholder that shows on image error
+                    mediaContent += `<div class="placeholder" style="display: none;">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        <span style="font-size: 11px;">Click to view on Instagram</span>
+                    </div>`;
+                }
+                
+                if (hasVideo) {
+                    mediaContent += `<video src="${post.videoUrl}" muted loop playsinline preload="none" crossorigin="anonymous"
+                        onerror="this.style.display='none';"></video>`;
+                }
+                
+                if (!hasThumbnail) {
+                    mediaContent += `<div class="placeholder">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        <span style="font-size: 11px;">Click to view on Instagram</span>
+                    </div>`;
+                    if (!hasVideo) {
+                        mediaContent += `<div class="no-media-badge">📷 Tap to view</div>`;
+                    }
+                }
+
+                // Build avatar content
+                const username = post.username || post.shortcode || 'user';
+                const avatarInitial = username.charAt(0).toUpperCase();
+                let avatarContent = '';
+                if (post.ownerProfilePicUrl) {
+                    avatarContent = `<img src="${post.ownerProfilePicUrl}" alt="${username}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                     <span class="avatar-fallback" style="display: none;">${avatarInitial}</span>`;
+                } else {
+                    avatarContent = `<span class="avatar-fallback">${avatarInitial}</span>`;
+                }
+
+                const isRestricted = !hasStats && wasScraped;
+                const cardClass = isRestricted ? 'restricted' : (!hasStats ? 'no-stats' : '');
+
+                return `
+                    <div class="post-card ${cardClass} ${isPending ? 'pending' : ''}" 
+                         onclick="window.open('${post.url}', '_blank')"
+                         onmouseenter="handlePostHover(this, true)"
+                         onmouseleave="handlePostHover(this, false)">
+                        <div class="post-rank">#${index + 1}</div>
+                        <div class="post-thumbnail">
+                            ${mediaContent}
+                            <div class="post-badge">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z"/>
+                                </svg>
+                                Reel
+                            </div>
+                            ${statusBadge}
+                        </div>
+                        <div class="post-info">
+                            <div class="post-author">
+                                <div class="post-avatar">
+                                    ${avatarContent}
+                                </div>
+                                <div class="post-username">${username}</div>
+                            </div>
+                            <div class="post-caption">${post.caption ? post.caption.replace(/</g, '&lt;').replace(/>/g, '&gt;') : ''}</div>
+                            <div class="post-stats">
+                                <div class="post-stat views ${!hasStats ? 'missing' : ''}">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                                    <span class="value">${hasStats ? formatNumber(post.views) : '--'}</span>
+                                </div>
+                                <div class="post-stat ${!hasStats ? 'missing' : ''}">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                    <span class="value">${hasStats ? formatNumber(post.likes || 0) : '--'}</span>
+                                </div>
+                                <div class="post-stat ${!hasStats ? 'missing' : ''}">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
+                                    <span class="value">${hasStats ? (post.comments || 0) : '--'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Handle video hover play/pause
+        function handlePostHover(card, isEntering) {
+            const video = card.querySelector('video');
+            if (!video) return;
+            
+            if (isEntering) {
+                video.currentTime = 0;
+                video.play().catch(() => {});
+            } else {
+                video.pause();
+            }
+        }
+
+        // =====================================================
+        // ADMIN FUNCTIONS
+        // =====================================================
+        async function seedPosts() {
+            if (!convexClient) {
+                alert('Convex not connected');
+                return;
+            }
+
+            const btn = document.getElementById('seedBtn');
+            const status = document.getElementById('adminStatus');
+            
+            btn.disabled = true;
+            status.style.display = 'block';
+            status.innerHTML = '⏳ Seeding posts to database...';
+
+            try {
+                const result = await convexClient.mutation("seed:seedPosts", {});
+                status.innerHTML = `✅ Done! Added: ${result.added}, Skipped: ${result.skipped} (already exist)`;
+            } catch (error) {
+                status.innerHTML = `❌ Error: ${error.message}`;
+            }
+            
+            btn.disabled = false;
+        }
+
+        async function triggerScrape() {
+            if (!convexClient) {
+                alert('Convex not connected');
+                return;
+            }
+
+            const btn = document.getElementById('scrapeBtn');
+            const status = document.getElementById('adminStatus');
+            
+            btn.disabled = true;
+            status.style.display = 'block';
+            status.innerHTML = '⏳ Starting Instagram scrape via Apify...';
+
+            try {
+                const result = await convexClient.action("apify:startScrapeJob", {});
+                status.innerHTML = `✅ Scrape started!<br>Job ID: ${result.jobId}<br>Processing ${result.postsCount} posts...<br><small>Results will appear automatically when ready.</small>`;
+            } catch (error) {
+                status.innerHTML = `❌ Error: ${error.message}`;
+            }
+            
+            btn.disabled = false;
+        }
+
+        async function viewScrapeHistory() {
+            if (!convexClient) {
+                alert('Convex not connected');
+                return;
+            }
+
+            const status = document.getElementById('adminStatus');
+            status.style.display = 'block';
+            status.innerHTML = '⏳ Loading...';
+
+            try {
+                const jobs = await convexClient.query("scrapeJobs:getRecentJobs", { limit: 5 });
+                
+                if (!jobs.length) {
+                    status.innerHTML = '📭 No scrape jobs yet. Click "Run Instagram Scrape" to start one.';
+                    return;
+                }
+
+                const html = jobs.map(job => {
+                    const date = new Date(job.startedAt).toLocaleString();
+                    const duration = job.completedAt 
+                        ? Math.round((job.completedAt - job.startedAt) / 1000) + 's'
+                        : 'Running...';
+                    const icon = job.status === 'completed' ? '✅' : job.status === 'failed' ? '❌' : '⏳';
+
+                    return `<div style="padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+                        ${icon} <strong>${job.status}</strong> - ${date}<br>
+                        <small>Duration: ${duration} | Success: ${job.postsSucceeded} | Failed: ${job.postsFailed}</small>
+                        ${job.apifyRunId ? `<br><small>Apify Run: ${job.apifyRunId}</small>` : ''}
+                        ${job.error ? `<br><small style="color: var(--danger);">${job.error}</small>` : ''}
+                    </div>`;
+                }).join('');
+
+                status.innerHTML = `<h4 style="margin-bottom: 12px;">Recent Scrape Jobs</h4>${html}`;
+            } catch (error) {
+                status.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testApify() {
+            if (!convexClient) {
+                alert('Convex not connected');
+                return;
+            }
+
+            const btn = document.getElementById('testBtn');
+            const status = document.getElementById('adminStatus');
+            
+            btn.disabled = true;
+            status.style.display = 'block';
+            status.innerHTML = '⏳ Testing Apify connection...';
+
+            try {
+                const result = await convexClient.action("apify:testApifyConnection", {});
+                
+                if (result.success) {
+                    status.innerHTML = `✅ <strong>Apify Connected!</strong><br>
+                        <small>Actor: ${result.actorName}<br>
+                        ID: ${result.actorId}</small>`;
+                } else {
+                    status.innerHTML = `❌ <strong>Apify Connection Failed</strong><br>
+                        <small>${result.error}</small><br><br>
+                        <small>Make sure to set the API token:<br>
+                        <code>npx convex env set APIFY_API_TOKEN your_token</code></small>`;
+                }
+            } catch (error) {
+                status.innerHTML = `❌ Error: ${error.message}`;
+            }
+            
+            btn.disabled = false;
+        }
+
+        async function getLastResults() {
+            if (!convexClient) {
+                alert('Convex not connected');
+                return;
+            }
+
+            const status = document.getElementById('adminStatus');
+            status.style.display = 'block';
+            status.innerHTML = '⏳ Fetching last Apify results...';
+
+            try {
+                const result = await convexClient.action("apify:getLastRunResults", {});
+                
+                if (result.success) {
+                    status.innerHTML = `✅ <strong>Last Run: ${result.count} results</strong><br><br>
+                        <strong>Sample data:</strong>
+                        <pre style="background: var(--bg-primary); padding: 12px; border-radius: 8px; overflow: auto; max-height: 300px; font-size: 11px;">${JSON.stringify(result.sample, null, 2)}</pre>`;
+                } else {
+                    status.innerHTML = `❌ ${result.error}`;
+                }
+            } catch (error) {
+                status.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // =====================================================
+        // INIT
+        // =====================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Show admin if ?admin=true
+            if (new URLSearchParams(window.location.search).get('admin') === 'true') {
+                document.getElementById('adminSection').style.display = 'block';
+            }
+
+            // Initialize Convex
+            initConvex();
+        });
+    </script>
+</body>
+</html>

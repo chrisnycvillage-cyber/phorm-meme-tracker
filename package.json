@@ -1,0 +1,13 @@
+{
+  "name": "phorm-tracker",
+  "version": "1.0.0",
+  "description": "1st Phorm Meme Seeding Campaign Tracker with Convex backend",
+  "type": "module",
+  "scripts": {
+    "dev": "npx convex dev",
+    "deploy": "npx convex deploy"
+  },
+  "dependencies": {
+    "convex": "^1.30.0"
+  }
+}
