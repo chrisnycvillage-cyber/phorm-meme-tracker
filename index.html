@@ -330,6 +330,10 @@
             left: 0;
         }
 
+        .post-thumbnail img {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+        }
+
         .post-thumbnail video {
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -338,6 +342,16 @@
 
         .post-card:hover .post-thumbnail video {
             opacity: 1;
+        }
+
+        /* Loading state for images */
+        .post-thumbnail img.loading {
+            opacity: 0;
+        }
+
+        .post-thumbnail img.loaded {
+            opacity: 1;
+            transition: opacity 0.3s ease;
         }
 
         .post-thumbnail .placeholder {
@@ -1019,26 +1033,29 @@
 
                 // Build the media content
                 let mediaContent = '';
-                
+
                 if (hasThumbnail) {
-                    mediaContent += `<img src="${post.thumbnailUrl}" alt="Thumbnail" loading="lazy" 
+                    // Note: Removed crossorigin="anonymous" to avoid CORS issues with Instagram CDN
+                    mediaContent += `<img src="${post.thumbnailUrl}" alt="Thumbnail" loading="lazy" class="loading"
+                        onload="this.classList.remove('loading'); this.classList.add('loaded'); this.parentElement.querySelector('.placeholder').style.display='none';"
                         onerror="this.style.display='none'; this.parentElement.querySelector('.placeholder').style.display='flex';"
-                        crossorigin="anonymous">`;
+                        referrerpolicy="no-referrer">`;
                     mediaContent += `<div class="hover-overlay"></div>`;
                     mediaContent += `<div class="play-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>`;
                     mediaContent += `<div class="click-hint">▶ Watch on Instagram</div>`;
-                    // Hidden placeholder that shows on image error
-                    mediaContent += `<div class="placeholder" style="display: none;">
+                    // Placeholder shown while loading or on error
+                    mediaContent += `<div class="placeholder">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                         <span style="font-size: 11px;">Click to view on Instagram</span>
                     </div>`;
                 }
-                
+
                 if (hasVideo) {
-                    mediaContent += `<video src="${post.videoUrl}" muted loop playsinline preload="none" crossorigin="anonymous"
+                    // Note: Removed crossorigin to avoid CORS issues
+                    mediaContent += `<video src="${post.videoUrl}" muted loop playsinline preload="none"
                         onerror="this.style.display='none';"></video>`;
                 }
-                
+
                 if (!hasThumbnail) {
                     mediaContent += `<div class="placeholder">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -1054,7 +1071,7 @@
                 const avatarInitial = username.charAt(0).toUpperCase();
                 let avatarContent = '';
                 if (post.ownerProfilePicUrl) {
-                    avatarContent = `<img src="${post.ownerProfilePicUrl}" alt="${username}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    avatarContent = `<img src="${post.ownerProfilePicUrl}" alt="${username}" referrerpolicy="no-referrer" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                      <span class="avatar-fallback" style="display: none;">${avatarInitial}</span>`;
                 } else {
                     avatarContent = `<span class="avatar-fallback">${avatarInitial}</span>`;
