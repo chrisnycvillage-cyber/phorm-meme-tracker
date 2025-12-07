@@ -573,6 +573,43 @@
         .post-stat.views .value { color: var(--accent-primary); }
         .post-stat.missing .value { color: var(--text-muted); opacity: 0.5; }
 
+        /* Stats overlay on thumbnail - Metrix Media style */
+        .thumbnail-stats-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 60%, transparent 100%);
+            padding: 30px 10px 10px 10px;
+            display: flex;
+            justify-content: space-around;
+            z-index: 3;
+        }
+
+        .thumbnail-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .thumbnail-stat-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .thumbnail-stat-label {
+            font-size: 9px;
+            color: rgba(255,255,255,0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .thumbnail-stat.views .thumbnail-stat-value {
+            color: var(--accent-primary);
+        }
+
         .admin-section {
             margin-top: 32px;
             padding: 24px;
@@ -1025,6 +1062,21 @@
                     mediaContent += `<div class="hover-overlay"></div>`;
                     mediaContent += `<div class="play-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>`;
                     mediaContent += `<div class="click-hint">▶ Watch on Instagram</div>`;
+                    // Stats overlay on thumbnail (Metrix Media style)
+                    mediaContent += `<div class="thumbnail-stats-overlay">
+                        <div class="thumbnail-stat views">
+                            <span class="thumbnail-stat-value">${hasStats ? formatNumber(post.views) : '--'}</span>
+                            <span class="thumbnail-stat-label">Views</span>
+                        </div>
+                        <div class="thumbnail-stat">
+                            <span class="thumbnail-stat-value">${hasStats ? formatNumber(post.likes || 0) : '--'}</span>
+                            <span class="thumbnail-stat-label">Likes</span>
+                        </div>
+                        <div class="thumbnail-stat">
+                            <span class="thumbnail-stat-value">${hasStats ? (post.comments || 0) : '--'}</span>
+                            <span class="thumbnail-stat-label">Comments</span>
+                        </div>
+                    </div>`;
                     // Placeholder shown while loading or on error
                     mediaContent += `<div class="placeholder">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
