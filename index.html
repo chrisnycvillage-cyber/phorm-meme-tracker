@@ -457,20 +457,18 @@
 
         .post-badge {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            padding: 4px 8px;
-            border-radius: 6px;
+            top: 12px;
+            left: 12px;
+            background: #5bcfcf;
+            padding: 6px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
-            gap: 4px;
-            font-size: 10px;
-            font-weight: 500;
+            justify-content: center;
+            z-index: 10;
         }
 
-        .post-badge svg { width: 12px; height: 12px; }
+        .post-badge svg { width: 18px; height: 18px; color: #fff; }
 
         .stats-badge {
             position: absolute;
@@ -579,35 +577,64 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 60%, transparent 100%);
-            padding: 30px 10px 10px 10px;
-            display: flex;
-            justify-content: space-around;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 70%, transparent 100%);
+            padding: 40px 12px 12px 12px;
             z-index: 3;
         }
 
-        .thumbnail-stat {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
+        .thumbnail-username {
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 8px;
         }
 
-        .thumbnail-stat-value {
-            font-size: 14px;
-            font-weight: 700;
+        .thumbnail-stat-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+            font-size: 12px;
             color: #fff;
         }
 
-        .thumbnail-stat-label {
-            font-size: 9px;
-            color: rgba(255,255,255,0.7);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .thumbnail-stat-row svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
         }
 
-        .thumbnail-stat.views .thumbnail-stat-value {
-            color: var(--accent-primary);
+        .thumbnail-stat-row.views svg { color: #4ecdc4; }
+        .thumbnail-stat-row.likes svg { color: #ff6b6b; }
+        .thumbnail-stat-row.comments svg { color: #ffd93d; }
+        .thumbnail-stat-row.engagement svg { color: #6bcb77; }
+
+        .thumbnail-stat-row span {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .thumbnail-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 10px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Caption above thumbnail */
+        .post-caption-top {
+            padding: 12px;
+            font-size: 12px;
+            color: var(--text-primary);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 44px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .admin-section {
@@ -836,7 +863,7 @@
         // =====================================================
         // CONVEX CONFIGURATION
         // =====================================================
-        const CONVEX_URL = 'https://dusty-chinchilla-323.convex.cloud';
+        const CONVEX_URL = 'https://fleet-goshawk-352.convex.cloud';
         
         const TARGET_VIEWS = 10000000;
         
@@ -938,6 +965,18 @@
             if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
             if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
             return num.toLocaleString();
+        }
+
+        function formatTimeAgo(timestamp) {
+            const now = Date.now();
+            const diffMs = now - timestamp;
+            const diffMins = Math.floor(diffMs / (1000 * 60));
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+            if (diffMins < 60) return `${diffMins} mins ago`;
+            if (diffHours < 24) return `${diffHours} hours ago`;
+            return `${diffDays} days ago`;
         }
 
         // Static campaign totals from Metrix Media tracker
@@ -1052,9 +1091,24 @@
 
                 // Build the media content
                 let mediaContent = '';
+                const username = post.username || 'unknown';
+
+                // Calculate engagement rate
+                const engRate = hasStats && post.views > 0
+                    ? (((post.likes || 0) + (post.comments || 0)) / post.views * 100).toFixed(2)
+                    : '0.00';
+
+                // Format posted date
+                const postedDate = post.postedAt
+                    ? new Date(parseInt(post.postedAt) * 1000).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' })
+                    : '--';
+
+                // Format last updated
+                const lastUpdated = post.lastScrapedAt
+                    ? formatTimeAgo(post.lastScrapedAt)
+                    : '--';
 
                 if (hasThumbnail) {
-                    // Note: Removed crossorigin="anonymous" to avoid CORS issues with Instagram CDN
                     mediaContent += `<img src="${post.thumbnailUrl}" alt="Thumbnail" loading="lazy" class="loading"
                         onload="this.classList.remove('loading'); this.classList.add('loaded'); this.parentElement.querySelector('.placeholder').style.display='none';"
                         onerror="this.style.display='none'; this.parentElement.querySelector('.placeholder').style.display='flex';"
@@ -1062,21 +1116,6 @@
                     mediaContent += `<div class="hover-overlay"></div>`;
                     mediaContent += `<div class="play-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>`;
                     mediaContent += `<div class="click-hint">▶ Watch on Instagram</div>`;
-                    // Stats overlay on thumbnail (Metrix Media style)
-                    mediaContent += `<div class="thumbnail-stats-overlay">
-                        <div class="thumbnail-stat views">
-                            <span class="thumbnail-stat-value">${hasStats ? formatNumber(post.views) : '--'}</span>
-                            <span class="thumbnail-stat-label">Views</span>
-                        </div>
-                        <div class="thumbnail-stat">
-                            <span class="thumbnail-stat-value">${hasStats ? formatNumber(post.likes || 0) : '--'}</span>
-                            <span class="thumbnail-stat-label">Likes</span>
-                        </div>
-                        <div class="thumbnail-stat">
-                            <span class="thumbnail-stat-value">${hasStats ? (post.comments || 0) : '--'}</span>
-                            <span class="thumbnail-stat-label">Comments</span>
-                        </div>
-                    </div>`;
                     // Placeholder shown while loading or on error
                     mediaContent += `<div class="placeholder">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -1085,7 +1124,6 @@
                 }
 
                 if (hasVideo) {
-                    // Note: Removed crossorigin to avoid CORS issues
                     mediaContent += `<video src="${post.videoUrl}" muted loop playsinline preload="none"
                         onerror="this.style.display='none';"></video>`;
                 }
@@ -1095,63 +1133,52 @@
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                         <span style="font-size: 11px;">Click to view on Instagram</span>
                     </div>`;
-                    if (!hasVideo) {
-                        mediaContent += `<div class="no-media-badge">📷 Tap to view</div>`;
-                    }
                 }
 
-                // Build avatar content
-                const username = post.username || post.shortcode || 'user';
-                const avatarInitial = username.charAt(0).toUpperCase();
-                let avatarContent = '';
-                if (post.ownerProfilePicUrl) {
-                    avatarContent = `<img src="${post.ownerProfilePicUrl}" alt="${username}" referrerpolicy="no-referrer" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                     <span class="avatar-fallback" style="display: none;">${avatarInitial}</span>`;
-                } else {
-                    avatarContent = `<span class="avatar-fallback">${avatarInitial}</span>`;
-                }
+                // Stats overlay - Metrix Media style
+                const statsOverlay = `
+                    <div class="thumbnail-stats-overlay">
+                        <div class="thumbnail-username">@${username}</div>
+                        <div class="thumbnail-stat-row views">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            <span>${hasStats ? formatNumber(post.views) + ' views' : '-- views'}</span>
+                        </div>
+                        <div class="thumbnail-stat-row likes">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            <span>${hasStats ? formatNumber(post.likes || 0) + ' likes' : '-- likes'}</span>
+                        </div>
+                        <div class="thumbnail-stat-row comments">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
+                            <span>${hasStats ? (post.comments || 0) + ' comments' : '-- comments'}</span>
+                        </div>
+                        <div class="thumbnail-stat-row engagement">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+                            <span>${engRate}% eng. rate</span>
+                        </div>
+                        <div class="thumbnail-footer">
+                            <span>Posted ${postedDate}</span>
+                            <span>Last Updated ${lastUpdated}</span>
+                        </div>
+                    </div>`;
 
                 const isRestricted = !hasStats && wasScraped;
                 const cardClass = isRestricted ? 'restricted' : (!hasStats ? 'no-stats' : '');
 
                 return `
-                    <div class="post-card ${cardClass} ${isPending ? 'pending' : ''}" 
+                    <div class="post-card ${cardClass} ${isPending ? 'pending' : ''}"
                          onclick="window.open('${post.url}', '_blank')"
                          onmouseenter="handlePostHover(this, true)"
                          onmouseleave="handlePostHover(this, false)">
-                        <div class="post-rank">#${index + 1}</div>
+                        <div class="post-badge">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z"/>
+                            </svg>
+                        </div>
+                        <div class="post-caption-top">${post.caption ? post.caption.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'No caption'}</div>
                         <div class="post-thumbnail">
                             ${mediaContent}
-                            <div class="post-badge">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z"/>
-                                </svg>
-                                Reel
-                            </div>
+                            ${statsOverlay}
                             ${statusBadge}
-                        </div>
-                        <div class="post-info">
-                            <div class="post-author">
-                                <div class="post-avatar">
-                                    ${avatarContent}
-                                </div>
-                                <div class="post-username">${username}</div>
-                            </div>
-                            <div class="post-caption">${post.caption ? post.caption.replace(/</g, '&lt;').replace(/>/g, '&gt;') : ''}</div>
-                            <div class="post-stats">
-                                <div class="post-stat views ${!hasStats ? 'missing' : ''}">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
-                                    <span class="value">${hasStats ? formatNumber(post.views) : '--'}</span>
-                                </div>
-                                <div class="post-stat ${!hasStats ? 'missing' : ''}">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                                    <span class="value">${hasStats ? formatNumber(post.likes || 0) : '--'}</span>
-                                </div>
-                                <div class="post-stat ${!hasStats ? 'missing' : ''}">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
-                                    <span class="value">${hasStats ? (post.comments || 0) : '--'}</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 `;
