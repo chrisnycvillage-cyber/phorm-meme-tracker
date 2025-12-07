@@ -903,57 +903,44 @@
             return num.toLocaleString();
         }
 
+        // Static campaign totals from Metrix Media tracker
+        const CAMPAIGN_TOTALS = {
+            totalViews: 10627682,
+            totalLikes: 133155,
+            totalComments: 2317,
+            totalShares: 48709,
+            totalPosts: 106,
+            engagementRate: 1.73
+        };
+
         function updateStats() {
-            if (!posts.length) return;
+            // Use static campaign totals from Metrix Media tracker
+            document.getElementById('totalViews').textContent = formatNumber(CAMPAIGN_TOTALS.totalViews);
+            document.getElementById('totalLikes').textContent = formatNumber(CAMPAIGN_TOTALS.totalLikes);
+            document.getElementById('totalComments').textContent = formatNumber(CAMPAIGN_TOTALS.totalComments);
+            document.getElementById('livePosts').textContent = CAMPAIGN_TOTALS.totalPosts;
+            document.getElementById('activePosts').textContent = CAMPAIGN_TOTALS.totalPosts;
+            document.getElementById('currentViews').textContent = formatNumber(CAMPAIGN_TOTALS.totalViews);
 
-            const totalViews = posts.reduce((sum, p) => sum + (p.views || 0), 0);
-            const totalLikes = posts.reduce((sum, p) => sum + (p.likes || 0), 0);
-            const totalComments = posts.reduce((sum, p) => sum + (p.comments || 0), 0);
-            const postsWithStats = posts.filter(p => p.views && p.views > 0).length;
-            const restrictedCount = posts.filter(p => p.lastScrapedAt && p.lastScrapedAt > 0 && (!p.views || p.views === 0)).length;
-            const activePostsCount = postsWithStats;
-
-            document.getElementById('totalViews').textContent = formatNumber(totalViews);
-            document.getElementById('totalLikes').textContent = formatNumber(totalLikes);
-            document.getElementById('totalComments').textContent = formatNumber(totalComments);
-            document.getElementById('livePosts').textContent = posts.length;
-            document.getElementById('activePosts').textContent = activePostsCount;
-            document.getElementById('currentViews').textContent = formatNumber(totalViews);
+            // Post count display (from actual loaded posts)
+            const scrapedPosts = posts.filter(p => p.lastScrapedAt && p.lastScrapedAt > 0);
+            const restrictedPosts = scrapedPosts.filter(p => !p.views || p.views === 0);
+            const restrictedCount = restrictedPosts.length;
             const restrictedText = restrictedCount > 0 ? ` • ${restrictedCount} restricted` : '';
             document.getElementById('postCount').textContent = `${posts.length} posts${restrictedText} • Sorted by views`;
 
-            const engagementRate = totalViews > 0 
-                ? ((totalLikes + totalComments) / totalViews * 100).toFixed(2) + '%'
-                : '0%';
-            document.getElementById('engagementRate').textContent = engagementRate;
+            // Use static engagement rate
+            document.getElementById('engagementRate').textContent = CAMPAIGN_TOTALS.engagementRate.toFixed(2) + '%';
 
-            // Progress bar
-            const progressPercent = Math.min((totalViews / TARGET_VIEWS) * 100, 100);
+            // Progress bar using static total views
+            const progressPercent = Math.min((CAMPAIGN_TOTALS.totalViews / TARGET_VIEWS) * 100, 100);
             document.getElementById('progressFill').style.width = progressPercent + '%';
 
-            // Stats coverage
-            const scrapedPosts = posts.filter(p => p.lastScrapedAt && p.lastScrapedAt > 0);
-            const restrictedPosts = scrapedPosts.filter(p => !p.views || p.views === 0);
-            const coverage = posts.length > 0 ? Math.round((postsWithStats / posts.length) * 100) : 0;
+            // Stats coverage - show as complete since we're using static totals
             const missingEl = document.getElementById('missingStatsStatus');
             const missingValue = document.getElementById('missingStatsValue');
-            
-            if (coverage === 100) {
-                missingEl.className = 'data-status-item success';
-                missingValue.textContent = '100% ✓';
-            } else if (coverage === 0 && scrapedPosts.length === 0) {
-                missingEl.className = 'data-status-item warning';
-                missingValue.textContent = `Awaiting scrape`;
-            } else {
-                const restrictedCount = restrictedPosts.length;
-                if (restrictedCount > 0) {
-                    missingEl.className = 'data-status-item';
-                    missingValue.textContent = `${postsWithStats}/${posts.length} (${restrictedCount} 🔒)`;
-                } else {
-                    missingEl.className = 'data-status-item';
-                    missingValue.textContent = `${postsWithStats}/${posts.length} (${coverage}%)`;
-                }
-            }
+            missingEl.className = 'data-status-item success';
+            missingValue.textContent = `${CAMPAIGN_TOTALS.totalPosts} posts ✓`;
         }
 
         function updateStatsDisplay() {
