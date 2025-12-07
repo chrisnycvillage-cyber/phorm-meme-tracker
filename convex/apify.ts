@@ -256,7 +256,7 @@ export const checkScrapeResults = internalAction({
           // Update post in database
           await ctx.runMutation(internal.posts.updatePostStats, {
             shortcode,
-            views: item.videoViewCount || item.videoPlayCount || item.playCount || item.viewCount,
+            views: item.videoPlayCount || item.videoViewCount || item.playCount || item.viewCount,
             likes: item.likesCount || item.likeCount || item.likes,
             comments: item.commentsCount || item.commentCount || item.comments,
             shares: item.sharesCount || item.shareCount,
