@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Pony • Campaign Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0d0d0d;
+            --bg-card: #1a1a1a;
+            --bg-card-hover: #242424;
+            --accent: #4ecdc4;
+            --accent-secondary: #26a69a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-muted: #707070;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --success: #4ecdc4;
+            --warning: #ffd93d;
+            --pink: #ff6b9d;
+            --purple: #a855f7;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            margin-bottom: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #333, #555);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: white;
+        }
+
+        .export-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .export-btn:hover {
+            background: var(--accent-secondary);
+            transform: translateY(-1px);
+        }
+
+        /* Campaign Header Card */
+        .campaign-header {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .campaign-cover {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .campaign-info {
+            flex: 1;
+        }
+
+        .campaign-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .campaign-stats-row {
+            display: flex;
+            gap: 32px;
+        }
+
+        .campaign-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .campaign-stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .campaign-stat-value {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-badge {
+            background: var(--accent);
+            color: #000;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .status-badge {
+            background: #666;
+            color: var(--accent);
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Main Content Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Post Performance Card */
+        .performance-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .performance-stats {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .perf-stat {
+            background: var(--accent);
+            color: #000;
+            padding: 16px 20px;
+            border-radius: 10px;
+            flex: 1;
+        }
+
+        .perf-stat-label {
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+
+        .perf-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .chart-title {
+            color: var(--accent);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(to bottom, transparent 0%, rgba(78, 205, 196, 0.1) 100%);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-line {
+            position: absolute;
+            bottom: 20px;
+            left: 10%;
+            right: 10%;
+            height: 60%;
+            border-left: 2px solid var(--accent);
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .chart-area {
+            position: absolute;
+            bottom: 20px;
+            left: 10%;
+            width: 80%;
+            height: 0;
+            background: linear-gradient(to top, rgba(78, 205, 196, 0.3), rgba(78, 205, 196, 0.05));
+            clip-path: polygon(0% 100%, 5% 98%, 15% 95%, 25% 90%, 35% 85%, 45% 70%, 55% 40%, 65% 20%, 75% 10%, 85% 5%, 95% 2%, 100% 0%, 100% 100%);
+            animation: chartGrow 1.5s ease-out forwards;
+        }
+
+        @keyframes chartGrow {
+            from { height: 0; }
+            to { height: 60%; }
+        }
+
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.views { background: var(--accent); }
+        .legend-dot.engagement { background: #666; }
+
+        /* Audio Section */
+        .audio-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .audio-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .audio-cover {
+            width: 64px;
+            height: 64px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #666, #888);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .audio-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .audio-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .audio-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .audio-stats {
+            display: flex;
+            gap: 12px;
+        }
+
+        .audio-stat {
+            background: var(--accent);
+            color: #000;
+            padding: 14px 18px;
+            border-radius: 10px;
+            flex: 1;
+        }
+
+        .audio-stat-label {
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .audio-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        /* Posts Section */
+        .posts-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .posts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .posts-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .posts-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .sort-select {
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .platform-filters {
+            display: flex;
+            gap: 8px;
+        }
+
+        .platform-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card-hover);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .platform-btn:hover,
+        .platform-btn.active {
+            border-color: var(--accent);
+            background: rgba(78, 205, 196, 0.1);
+        }
+
+        .platform-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-secondary);
+        }
+
+        .platform-btn.active svg {
+            fill: var(--accent);
+        }
+
+        /* Posts Stats Row */
+        .posts-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 1200px) {
+            .posts-stats-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .posts-stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .posts-stat-box {
+            background: var(--accent);
+            color: #000;
+            padding: 16px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .posts-stat-box.gray {
+            background: #555;
+            color: white;
+        }
+
+        .posts-stat-label {
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+
+        .posts-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        /* Posts Grid */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .post-card {
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .post-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent);
+        }
+
+        .post-thumbnail {
+            position: relative;
+            aspect-ratio: 9/16;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            overflow: hidden;
+        }
+
+        .post-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-platform-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 28px;
+            height: 28px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .post-platform-badge svg {
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+
+        .post-stats-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 60%, transparent 100%);
+            padding: 40px 12px 12px;
+        }
+
+        .post-username {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .post-stat-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .post-stat-row svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        .post-stat-row.views svg { fill: var(--accent); }
+        .post-stat-row.likes svg { fill: #ff6b6b; }
+        .post-stat-row.comments svg { fill: #ffd93d; }
+        .post-stat-row.shares svg { fill: #a855f7; }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 10px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* Placeholder state */
+        .post-thumbnail .placeholder {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text-muted);
+        }
+
+        .post-thumbnail .placeholder svg {
+            width: 40px;
+            height: 40px;
+            opacity: 0.4;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 48px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 12px;
+            padding-bottom: 24px;
+        }
+
+        /* Live indicator */
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--accent);
+        }
+
+        .live-indicator::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Tab navigation for audio charts */
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            margin-bottom: 12px;
+        }
+
+        .tab-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover,
+        .tab-btn.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        .mini-chart {
+            height: 120px;
+            background: linear-gradient(to bottom, transparent 0%, rgba(78, 205, 196, 0.05) 100%);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mini-chart-area {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to top, rgba(78, 205, 196, 0.2), transparent);
+            clip-path: polygon(0% 80%, 10% 75%, 20% 70%, 30% 65%, 40% 55%, 50% 45%, 60% 40%, 70% 35%, 80% 30%, 90% 25%, 100% 20%, 100% 100%, 0% 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">M</div>
+                <span style="font-weight: 600; font-size: 14px;">METRIX</span>
+            </div>
+            <button class="export-btn">
+                Export Posts
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Campaign Header -->
+        <div class="campaign-header">
+            <img src="https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=240&h=240&fit=crop" 
+                 alt="Show Pony Cover" 
+                 class="campaign-cover"
+                 onerror="this.style.background='linear-gradient(135deg, #4ecdc4, #26a69a)'; this.style.display='flex'; this.alt='🐴';">
+            <div class="campaign-info">
+                <h1 class="campaign-title">Kat Velasco - Show Pony</h1>
+                <div class="campaign-stats-row">
+                    <div class="campaign-stat">
+                        <span class="campaign-stat-label">Live Posts</span>
+                        <div class="campaign-stat-value">
+                            <span class="stat-badge">89</span>
+                        </div>
+                    </div>
+                    <div class="campaign-stat">
+                        <span class="campaign-stat-label">Status</span>
+                        <div class="campaign-stat-value">
+                            <span class="status-badge">In-Progress</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid: Performance & Chart -->
+        <div class="main-grid">
+            <!-- Post Performance -->
+            <div class="performance-card">
+                <h2 class="card-title">Post Performance</h2>
+                <div class="performance-stats">
+                    <div class="perf-stat">
+                        <div class="perf-stat-label">Total Views</div>
+                        <div class="perf-stat-value">30.1M</div>
+                    </div>
+                    <div class="perf-stat">
+                        <div class="perf-stat-label">Eng. Rate</div>
+                        <div class="perf-stat-value">2.26%</div>
+                    </div>
+                    <div class="perf-stat">
+                        <div class="perf-stat-label">Total Eng.</div>
+                        <div class="perf-stat-value">681k</div>
+                    </div>
+                </div>
+                <h3 class="chart-title">Views/Engagement Chart</h3>
+                <div class="chart-placeholder">
+                    <div class="chart-area"></div>
+                </div>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="legend-dot views"></div>
+                        <span>Total Views</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot engagement"></div>
+                        <span>Total Engagement</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right side placeholder for symmetry -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- Empty space for layout balance -->
+            </div>
+        </div>
+
+        <!-- TikTok Audio Section -->
+        <div class="audio-section">
+            <h2 class="card-title">TikTok Audio</h2>
+            <div class="audio-header">
+                <div class="audio-cover">
+                    <img src="https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=128&h=128&fit=crop" 
+                         alt="Show Pony"
+                         onerror="this.parentElement.innerHTML='🎵';">
+                </div>
+                <div class="audio-info">
+                    <h3>Show Pony</h3>
+                    <p>Kat Velasco</p>
+                </div>
+                <div class="audio-stats">
+                    <div class="audio-stat">
+                        <div class="audio-stat-label">Audio Uses</div>
+                        <div class="audio-stat-value">145</div>
+                    </div>
+                    <div class="audio-stat">
+                        <div class="audio-stat-label">Videos Added <small>(Since...)</small></div>
+                        <div class="audio-stat-value">+144</div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-nav">
+                <button class="tab-btn active">Usage</button>
+                <button class="tab-btn">Velocity</button>
+            </div>
+            <h4 style="color: var(--accent); font-size: 14px; margin-bottom: 12px; text-align: center;">Audio Usage</h4>
+            <div class="mini-chart">
+                <div class="mini-chart-area"></div>
+            </div>
+        </div>
+
+        <!-- Instagram Audio Section -->
+        <div class="audio-section">
+            <h2 class="card-title">Instagram Official Audio</h2>
+            <div class="audio-header">
+                <div class="audio-cover">
+                    <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=128&h=128&fit=crop" 
+                         alt="Show Pony Instagram"
+                         onerror="this.parentElement.innerHTML='🎵';">
+                </div>
+                <div class="audio-info">
+                    <h3>Show Pony</h3>
+                    <p>kat.velasco.music</p>
+                </div>
+                <div class="audio-stats">
+                    <div class="audio-stat">
+                        <div class="audio-stat-label">Audio...</div>
+                        <div class="audio-stat-value">45</div>
+                    </div>
+                    <div class="audio-stat">
+                        <div class="audio-stat-label">Videos...</div>
+                        <div class="audio-stat-value">+43</div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-nav">
+                <button class="tab-btn active">Usage</button>
+                <button class="tab-btn">Velocity</button>
+            </div>
+            <h4 style="color: var(--accent); font-size: 14px; margin-bottom: 12px; text-align: center;">Audio Usage</h4>
+            <div class="mini-chart">
+                <div class="mini-chart-area"></div>
+            </div>
+        </div>
+
+        <!-- Posts Section -->
+        <div class="posts-section">
+            <div class="posts-header">
+                <h2 class="posts-title">Posts</h2>
+                <div class="posts-controls">
+                    <select class="sort-select">
+                        <option>Views/Engagement</option>
+                        <option>Most Recent</option>
+                        <option>Most Likes</option>
+                    </select>
+                    <div class="platform-filters">
+                        <button class="platform-btn active" title="TikTok">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                            </svg>
+                        </button>
+                        <button class="platform-btn active" title="Instagram">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+                            </svg>
+                        </button>
+                        <button class="platform-btn" title="Grid view">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/>
+                            </svg>
+                        </button>
+                        <button class="platform-btn" title="Menu">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Posts Stats -->
+            <div class="posts-stats-grid">
+                <div class="posts-stat-box gray">
+                    <div class="posts-stat-label">Total Posts</div>
+                    <div class="posts-stat-value">89</div>
+                </div>
+                <div class="posts-stat-box">
+                    <div class="posts-stat-label">Total Views</div>
+                    <div class="posts-stat-value">30,127,220</div>
+                </div>
+                <div class="posts-stat-box">
+                    <div class="posts-stat-label">Total Likes</div>
+                    <div class="posts-stat-value">543,538</div>
+                </div>
+                <div class="posts-stat-box">
+                    <div class="posts-stat-label">Total Comments</div>
+                    <div class="posts-stat-value">9,498</div>
+                </div>
+                <div class="posts-stat-box">
+                    <div class="posts-stat-label">Total Shares</div>
+                    <div class="posts-stat-value">126,117</div>
+                </div>
+                <div class="posts-stat-box">
+                    <div class="posts-stat-label">Total Downloads</div>
+                    <div class="posts-stat-value">2,171</div>
+                </div>
+            </div>
+
+            <!-- Posts Grid -->
+            <div class="posts-grid" id="postsGrid">
+                <!-- Posts will be rendered here by JavaScript -->
+            </div>
+        </div>
+
+        <footer>
+            <p>Show Pony Campaign Tracker • Powered by Metrix Media</p>
+            <p style="margin-top: 4px;">
+                <span class="live-indicator">Real-time updates</span>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Sample post data from the Show Pony campaign
+        const POSTS = [
+            { username: "dancequeen_mia", platform: "tiktok", views: 8234000, likes: 234500, comments: 3420, shares: 45600, thumbnail: "https://picsum.photos/seed/sp1/400/711", url: "https://www.tiktok.com/@dancequeen_mia" },
+            { username: "horsegirl_vibes", platform: "tiktok", views: 5672000, likes: 189200, comments: 2890, shares: 32100, thumbnail: "https://picsum.photos/seed/sp2/400/711", url: "https://www.tiktok.com/@horsegirl_vibes" },
+            { username: "country_dreams", platform: "instagram", views: 4123000, likes: 156700, comments: 1245, shares: 18900, thumbnail: "https://picsum.photos/seed/sp3/400/711", url: "https://www.instagram.com/country_dreams" },
+            { username: "nashville_nights", platform: "tiktok", views: 3890000, likes: 98400, comments: 987, shares: 12300, thumbnail: "https://picsum.photos/seed/sp4/400/711", url: "https://www.tiktok.com/@nashville_nights" },
+            { username: "barn_life", platform: "instagram", views: 2456000, likes: 78900, comments: 654, shares: 8900, thumbnail: "https://picsum.photos/seed/sp5/400/711", url: "https://www.instagram.com/barn_life" },
+            { username: "western_style", platform: "tiktok", views: 1892000, likes: 56700, comments: 543, shares: 7800, thumbnail: "https://picsum.photos/seed/sp6/400/711", url: "https://www.tiktok.com/@western_style" },
+            { username: "rodeo_queen", platform: "instagram", views: 1567000, likes: 45600, comments: 432, shares: 6700, thumbnail: "https://picsum.photos/seed/sp7/400/711", url: "https://www.instagram.com/rodeo_queen" },
+            { username: "cowgirl_aesthetic", platform: "tiktok", views: 1234000, likes: 34500, comments: 321, shares: 5600, thumbnail: "https://picsum.photos/seed/sp8/400/711", url: "https://www.tiktok.com/@cowgirl_aesthetic" },
+            { username: "ranch_living", platform: "instagram", views: 987000, likes: 28900, comments: 234, shares: 4500, thumbnail: "https://picsum.photos/seed/sp9/400/711", url: "https://www.instagram.com/ranch_living" },
+            { username: "horse_lover_99", platform: "tiktok", views: 876000, likes: 23400, comments: 198, shares: 3400, thumbnail: "https://picsum.photos/seed/sp10/400/711", url: "https://www.tiktok.com/@horse_lover_99" },
+            { username: "country_music_fan", platform: "tiktok", views: 765000, likes: 21000, comments: 176, shares: 2900, thumbnail: "https://picsum.photos/seed/sp11/400/711", url: "https://www.tiktok.com/@country_music_fan" },
+            { username: "dancing_with_horses", platform: "instagram", views: 654000, likes: 18700, comments: 154, shares: 2600, thumbnail: "https://picsum.photos/seed/sp12/400/711", url: "https://www.instagram.com/dancing_with_horses" },
+            { username: "texas_sunsets", platform: "tiktok", views: 543000, likes: 15600, comments: 132, shares: 2100, thumbnail: "https://picsum.photos/seed/sp13/400/711", url: "https://www.tiktok.com/@texas_sunsets" },
+            { username: "wild_west_vibes", platform: "instagram", views: 432000, likes: 12300, comments: 109, shares: 1800, thumbnail: "https://picsum.photos/seed/sp14/400/711", url: "https://www.instagram.com/wild_west_vibes" },
+            { username: "barn_dance_crew", platform: "tiktok", views: 321000, likes: 9800, comments: 87, shares: 1500, thumbnail: "https://picsum.photos/seed/sp15/400/711", url: "https://www.tiktok.com/@barn_dance_crew" },
+            { username: "mustang_sally", platform: "instagram", views: 298000, likes: 8700, comments: 76, shares: 1200, thumbnail: "https://picsum.photos/seed/sp16/400/711", url: "https://www.instagram.com/mustang_sally" },
+            { username: "line_dance_life", platform: "tiktok", views: 267000, likes: 7600, comments: 65, shares: 1100, thumbnail: "https://picsum.photos/seed/sp17/400/711", url: "https://www.tiktok.com/@line_dance_life" },
+            { username: "southern_belle", platform: "instagram", views: 234000, likes: 6500, comments: 54, shares: 980, thumbnail: "https://picsum.photos/seed/sp18/400/711", url: "https://www.instagram.com/southern_belle" },
+            { username: "honky_tonk_queen", platform: "tiktok", views: 198000, likes: 5400, comments: 43, shares: 870, thumbnail: "https://picsum.photos/seed/sp19/400/711", url: "https://www.tiktok.com/@honky_tonk_queen" },
+            { username: "dusty_boots", platform: "instagram", views: 176000, likes: 4800, comments: 38, shares: 760, thumbnail: "https://picsum.photos/seed/sp20/400/711", url: "https://www.instagram.com/dusty_boots" }
+        ];
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toLocaleString();
+        }
+
+        function renderPosts() {
+            const grid = document.getElementById('postsGrid');
+            
+            grid.innerHTML = POSTS.map((post, index) => {
+                const platformIcon = post.platform === 'tiktok' 
+                    ? '<svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>'
+                    : '<svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z"/></svg>';
+
+                return `
+                    <div class="post-card" onclick="window.open('${post.url}', '_blank')">
+                        <div class="post-thumbnail">
+                            <img src="${post.thumbnail}" alt="@${post.username}" loading="lazy"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="placeholder" style="display: none;">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                <span style="font-size: 11px;">Click to view</span>
+                            </div>
+                            <div class="post-platform-badge">
+                                ${platformIcon}
+                            </div>
+                            <div class="post-stats-overlay">
+                                <div class="post-username">@${post.username}</div>
+                                <div class="post-stat-row views">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                    <span>${formatNumber(post.views)} views</span>
+                                </div>
+                                <div class="post-stat-row likes">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                    <span>${formatNumber(post.likes)} likes</span>
+                                </div>
+                                <div class="post-stat-row comments">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
+                                    <span>${formatNumber(post.comments)} comments</span>
+                                </div>
+                                <div class="post-stat-row shares">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+                                    <span>${formatNumber(post.shares)} shares</span>
+                                </div>
+                                <div class="post-footer">
+                                    <span>${post.platform === 'tiktok' ? 'TikTok' : 'Instagram'}</span>
+                                    <span>Click to view →</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', renderPosts);
+    </script>
+</body>
+</html>
+
