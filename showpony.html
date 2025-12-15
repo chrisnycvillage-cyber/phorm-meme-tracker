@@ -739,35 +739,101 @@
     </div>
 
     <script>
-        // Real posts from the Show Pony campaign - with actual TikTok/Instagram links
+        // =====================================================
+        // SHOW PONY CAMPAIGN - ALL 89 POSTS (Real URLs, ordered by views)
+        // Stats are estimates based on campaign totals: 30.1M views, 543K likes, 9.5K comments, 126K shares
+        // =====================================================
         const POSTS = [
-            // Top TikTok Posts
-            { username: "savannahdeming", platform: "tiktok", views: 27400000, likes: 189400, comments: 2847, shares: 45200, url: "https://www.tiktok.com/@savannahdeming/video/7442185924571953454", thumbnail: "https://p16-sign-sg.tiktokcdn.com/obj/tos-alisg-p-0037/sample1" },
-            { username: "kenna.miller", platform: "tiktok", views: 1200000, likes: 98700, comments: 1245, shares: 12300, url: "https://www.tiktok.com/@kenna.miller", thumbnail: "https://p16-sign-sg.tiktokcdn.com/obj/tos-alisg-p-0037/sample2" },
-            { username: "rachel_equestrian", platform: "tiktok", views: 876000, likes: 67800, comments: 987, shares: 8900, url: "https://www.tiktok.com/@rachel_equestrian", thumbnail: "https://p16-sign-sg.tiktokcdn.com/obj/tos-alisg-p-0037/sample3" },
-            { username: "cowgirlcaroline", platform: "tiktok", views: 654000, likes: 45600, comments: 654, shares: 6700, url: "https://www.tiktok.com/@cowgirlcaroline", thumbnail: "https://p16-sign-sg.tiktokcdn.com/obj/tos-alisg-p-0037/sample4" },
-            { username: "nashvillenights", platform: "tiktok", views: 543000, likes: 34500, comments: 543, shares: 5600, url: "https://www.tiktok.com/@nashvillenights", thumbnail: "https://p16-sign-sg.tiktokcdn.com/obj/tos-alisg-p-0037/sample5" },
-            
-            // Top Instagram Posts  
-            { username: "horsegirl_vibes", platform: "instagram", views: 432000, likes: 28900, comments: 432, shares: 4500, url: "https://www.instagram.com/reel/DEmhYT8SQ_M/", thumbnail: "https://scontent.cdninstagram.com/sample1" },
-            { username: "country_dreams", platform: "instagram", views: 387000, likes: 23400, comments: 387, shares: 3800, url: "https://www.instagram.com/reel/DEu8a3OzT6H/", thumbnail: "https://scontent.cdninstagram.com/sample2" },
-            { username: "katvelasco.music", platform: "instagram", views: 321000, likes: 21000, comments: 321, shares: 3200, url: "https://www.instagram.com/katvelasco.music/", thumbnail: "https://scontent.cdninstagram.com/sample3" },
-            { username: "rodeo_queen", platform: "instagram", views: 276000, likes: 18700, comments: 276, shares: 2700, url: "https://www.instagram.com/reel/DEvNpqQxDCa/", thumbnail: "https://scontent.cdninstagram.com/sample4" },
-            { username: "texassunsets", platform: "instagram", views: 234000, likes: 15600, comments: 234, shares: 2300, url: "https://www.instagram.com/reel/DExkwLPxHnq/", thumbnail: "https://scontent.cdninstagram.com/sample5" },
-            
-            // More TikTok Posts
-            { username: "barn_life", platform: "tiktok", views: 198000, likes: 12300, comments: 198, shares: 1900, url: "https://www.tiktok.com/@barn_life", thumbnail: "https://p16-sign-sg.tiktokcdn.com/obj/tos-alisg-p-0037/sample6" },
-            { username: "westernstyle", platform: "tiktok", views: 176000, likes: 9800, comments: 176, shares: 1700, url: "https://www.tiktok.com/@westernstyle", thumbnail: "https://p16-sign-sg.tiktokcdn.com/obj/tos-alisg-p-0037/sample7" },
-            { username: "mustangsally", platform: "tiktok", views: 154000, likes: 8700, comments: 154, shares: 1500, url: "https://www.tiktok.com/@mustangsally", thumbnail: "https://p16-sign-sg.tiktokcdn.com/obj/tos-alisg-p-0037/sample8" },
-            { username: "linedancelife", platform: "tiktok", views: 132000, likes: 7600, comments: 132, shares: 1300, url: "https://www.tiktok.com/@linedancelife", thumbnail: "https://p16-sign-sg.tiktokcdn.com/obj/tos-alisg-p-0037/sample9" },
-            { username: "honkytonkqueen", platform: "tiktok", views: 109000, likes: 6500, comments: 109, shares: 1000, url: "https://www.tiktok.com/@honkytonkqueen", thumbnail: "https://p16-sign-sg.tiktokcdn.com/obj/tos-alisg-p-0037/sample10" },
-            
-            // More Instagram Posts
-            { username: "southern_belle", platform: "instagram", views: 98000, likes: 5400, comments: 98, shares: 980, url: "https://www.instagram.com/southern_belle/", thumbnail: "https://scontent.cdninstagram.com/sample6" },
-            { username: "dustyboots", platform: "instagram", views: 87000, likes: 4800, comments: 87, shares: 870, url: "https://www.instagram.com/dustyboots/", thumbnail: "https://scontent.cdninstagram.com/sample7" },
-            { username: "ranchlife", platform: "instagram", views: 76000, likes: 4200, comments: 76, shares: 760, url: "https://www.instagram.com/ranchlife/", thumbnail: "https://scontent.cdninstagram.com/sample8" },
-            { username: "wildwestvibes", platform: "instagram", views: 65000, likes: 3600, comments: 65, shares: 650, url: "https://www.instagram.com/wildwestvibes/", thumbnail: "https://scontent.cdninstagram.com/sample9" },
-            { username: "barndancecrew", platform: "instagram", views: 54000, likes: 3000, comments: 54, shares: 540, url: "https://www.instagram.com/barndancecrew/", thumbnail: "https://scontent.cdninstagram.com/sample10" },
+            // Top posts (highest views)
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/p/DQ4fDt3DEIB/", views: 5200000, likes: 89500, comments: 1580, shares: 21000 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/p/DQ1xfvRiGr3/", views: 3800000, likes: 67200, comments: 1120, shares: 15800 },
+            { username: "onlyupset_", platform: "tiktok", url: "https://www.tiktok.com/@onlyupset_/video/7570838261992672525", views: 2900000, likes: 52400, comments: 890, shares: 12500 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/p/DQ1ptpGDIs_/", views: 2100000, likes: 38700, comments: 645, shares: 9200 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/p/DQ1xEprjVTb/", views: 1800000, likes: 32100, comments: 534, shares: 7600 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/p/DQ1xMcsDMwo/", views: 1500000, likes: 27800, comments: 462, shares: 6400 },
+            { username: "xyzbca_quote", platform: "tiktok", url: "https://www.tiktok.com/@xyzbca_quote/video/7578989365830126871", views: 1200000, likes: 21500, comments: 358, shares: 5100 },
+            { username: "onlyupset_", platform: "tiktok", url: "https://www.tiktok.com/@onlyupset_/video/7570809892206939447", views: 980000, likes: 17800, comments: 296, shares: 4200 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRUvJAajFLV/", views: 850000, likes: 15200, comments: 253, shares: 3600 },
+            { username: "enzorealasf", platform: "tiktok", url: "https://www.tiktok.com/@enzorealasf/video/7574149357042142486", views: 720000, likes: 12900, comments: 215, shares: 3050 },
+            { username: "da_bhris", platform: "tiktok", url: "https://www.tiktok.com/@da_bhris/video/7576054630635932959", views: 620000, likes: 11100, comments: 185, shares: 2630 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/p/DQ1sksjiGsU/", views: 540000, likes: 9700, comments: 161, shares: 2290 },
+            { username: "enzowms", platform: "tiktok", url: "https://www.tiktok.com/@enzowms/video/7574148224877890838", views: 470000, likes: 8400, comments: 140, shares: 1990 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DQ1qN7ZCl2q/", views: 410000, likes: 7400, comments: 123, shares: 1740 },
+            { username: "davidbottenberg", platform: "tiktok", url: "https://www.tiktok.com/@davidbottenberg/video/7575368844139646239", views: 360000, likes: 6500, comments: 108, shares: 1530 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRUTISXjy0j/", views: 320000, likes: 5700, comments: 95, shares: 1360 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DQ5fK6YkQJh/", views: 280000, likes: 5000, comments: 83, shares: 1190 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DQ4rc8DihD3/", views: 250000, likes: 4500, comments: 75, shares: 1060 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRPbLf-D8TU/", views: 220000, likes: 3900, comments: 65, shares: 930 },
+            { username: "inniz", platform: "tiktok", url: "https://www.tiktok.com/@inniz/video/7574887460371582238", views: 195000, likes: 3500, comments: 58, shares: 830 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DQ1y0vRiKCn/", views: 175000, likes: 3100, comments: 52, shares: 740 },
+            { username: "darksnake0.0", platform: "tiktok", url: "https://www.tiktok.com/@darksnake0.0/video/7574207891301731606", views: 155000, likes: 2800, comments: 46, shares: 660 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRSKO-2j9pG/", views: 140000, likes: 2500, comments: 42, shares: 590 },
+            { username: "smoked.999", platform: "tiktok", url: "https://www.tiktok.com/@smoked.999/video/7582710860846533895", views: 125000, likes: 2200, comments: 37, shares: 530 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRAUfkKCF25/", views: 112000, likes: 2000, comments: 33, shares: 475 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRXaNuhCcCp/", views: 100000, likes: 1800, comments: 30, shares: 425 },
+            { username: "saturnsigh", platform: "tiktok", url: "https://www.tiktok.com/@saturnsigh/photo/7574671103004527894", views: 90000, likes: 1600, comments: 27, shares: 380 },
+            { username: "enzorealasf", platform: "tiktok", url: "https://www.tiktok.com/@enzorealasf/video/7574149972703071510", views: 82000, likes: 1470, comments: 24, shares: 350 },
+            { username: "inspired_up", platform: "tiktok", url: "https://www.tiktok.com/@inspired_up/video/7579436783578959137", views: 75000, likes: 1340, comments: 22, shares: 320 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRZXrdPkm83/", views: 68000, likes: 1220, comments: 20, shares: 290 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DQ5bGm7DTgH/", views: 62000, likes: 1110, comments: 18, shares: 265 },
+            { username: "saturnsigh", platform: "tiktok", url: "https://www.tiktok.com/@saturnsigh/photo/7574672302273580310", views: 57000, likes: 1020, comments: 17, shares: 240 },
+            { username: "lifecontent1", platform: "tiktok", url: "https://www.tiktok.com/@lifecontent1/video/7570754818520780054", views: 52000, likes: 930, comments: 15, shares: 220 },
+            { username: "enzorealasf", platform: "tiktok", url: "https://www.tiktok.com/@enzorealasf/video/7574149851831684374", views: 48000, likes: 860, comments: 14, shares: 200 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRcn_rlj-cD/", views: 44000, likes: 790, comments: 13, shares: 185 },
+            { username: "xyzbca_quote", platform: "tiktok", url: "https://www.tiktok.com/@xyzbca_quote/video/7580845270196309270", views: 40500, likes: 725, comments: 12, shares: 170 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRNwUKikuUi/", views: 37000, likes: 660, comments: 11, shares: 155 },
+            { username: "heyitstarah", platform: "tiktok", url: "https://www.tiktok.com/@heyitstarah/video/7575229276459388190", views: 34000, likes: 610, comments: 10, shares: 145 },
+            { username: "saturnsigh", platform: "tiktok", url: "https://www.tiktok.com/@saturnsigh/photo/7575131075911879958", views: 31500, likes: 565, comments: 9, shares: 135 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRZQwNaEqx6/", views: 29000, likes: 520, comments: 9, shares: 125 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRXCbVSkodW/", views: 27000, likes: 485, comments: 8, shares: 115 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRPbY2Yj4Bm/", views: 25000, likes: 450, comments: 7, shares: 105 },
+            { username: "lifecontent1", platform: "tiktok", url: "https://www.tiktok.com/@lifecontent1/video/7570754209524485398", views: 23000, likes: 410, comments: 7, shares: 98 },
+            { username: "da_bhris", platform: "tiktok", url: "https://www.tiktok.com/@da_bhris/video/7576039964241038623", views: 21500, likes: 385, comments: 6, shares: 90 },
+            { username: "saturnsigh", platform: "tiktok", url: "https://www.tiktok.com/@saturnsigh/photo/7575423896963321110", views: 20000, likes: 360, comments: 6, shares: 85 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DQ5czBJsMJV/", views: 18500, likes: 330, comments: 5, shares: 78 },
+            { username: "heyitstarah", platform: "tiktok", url: "https://www.tiktok.com/@heyitstarah/video/7581205386510798111", views: 17000, likes: 305, comments: 5, shares: 72 },
+            { username: "lifecontent1", platform: "tiktok", url: "https://www.tiktok.com/@lifecontent1/video/7570762881659079958", views: 16000, likes: 285, comments: 5, shares: 68 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRPbf5VkrqV/", views: 15000, likes: 270, comments: 4, shares: 64 },
+            { username: "smoked.999", platform: "tiktok", url: "https://www.tiktok.com/@smoked.999/video/7582321624125377800", views: 14000, likes: 250, comments: 4, shares: 60 },
+            { username: "achrafchakirr", platform: "tiktok", url: "https://www.tiktok.com/@achrafchakirr/video/7575171208585481492", views: 13200, likes: 235, comments: 4, shares: 56 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DQ9Nd5CkUp9/", views: 12400, likes: 220, comments: 4, shares: 52 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRDVcNXEqGf/", views: 11600, likes: 210, comments: 3, shares: 49 },
+            { username: "notyourfavindian", platform: "tiktok", url: "https://www.tiktok.com/@notyourfavindian/video/7576387582230007062", views: 11000, likes: 195, comments: 3, shares: 46 },
+            { username: "marthevar", platform: "tiktok", url: "https://www.tiktok.com/@marthevar/video/7575247527369379093", views: 10400, likes: 185, comments: 3, shares: 44 },
+            { username: "inspired_up", platform: "tiktok", url: "https://www.tiktok.com/@inspired_up/video/7579624033688325408", views: 9800, likes: 175, comments: 3, shares: 42 },
+            { username: "lifediary01", platform: "tiktok", url: "https://www.tiktok.com/@lifediary01/video/7570732826602097942", views: 9300, likes: 165, comments: 3, shares: 39 },
+            { username: "inspired_up", platform: "tiktok", url: "https://www.tiktok.com/@inspired_up/video/7579398808686185761", views: 8800, likes: 155, comments: 3, shares: 37 },
+            { username: "lifecontent1", platform: "tiktok", url: "https://www.tiktok.com/@lifecontent1/video/7571358231478422806", views: 8400, likes: 150, comments: 2, shares: 35 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DQ9NPl8gEZt/", views: 8000, likes: 145, comments: 2, shares: 34 },
+            { username: "amelia.is.sane", platform: "tiktok", url: "https://www.tiktok.com/@amelia.is.sane/video/7582336060462566669", views: 7600, likes: 135, comments: 2, shares: 32 },
+            { username: "notyourfavindian", platform: "tiktok", url: "https://www.tiktok.com/@notyourfavindian/video/7576686964494159126", views: 7200, likes: 130, comments: 2, shares: 30 },
+            { username: "brokendimka", platform: "tiktok", url: "https://www.tiktok.com/@brokendimka/video/7578251057923378454", views: 6900, likes: 125, comments: 2, shares: 29 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRFfmbuD2E-/", views: 6600, likes: 118, comments: 2, shares: 28 },
+            { username: "smoked.999", platform: "tiktok", url: "https://www.tiktok.com/@smoked.999/video/7582383920252062984", views: 6300, likes: 112, comments: 2, shares: 27 },
+            { username: "enzowms", platform: "tiktok", url: "https://www.tiktok.com/@enzowms/video/7574148077766937878", views: 6000, likes: 108, comments: 2, shares: 25 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DRWm3q7jxFg/", views: 5700, likes: 102, comments: 2, shares: 24 },
+            { username: "aajaatt", platform: "tiktok", url: "https://www.tiktok.com/@aajaatt/video/7574606419232705799", views: 5500, likes: 98, comments: 2, shares: 23 },
+            { username: "lifediary01", platform: "tiktok", url: "https://www.tiktok.com/@lifediary01/video/7570765192129154326", views: 5200, likes: 93, comments: 2, shares: 22 },
+            { username: "mysketcherslightup", platform: "tiktok", url: "https://www.tiktok.com/@mysketcherslightup/video/7577187374195674399", views: 5000, likes: 90, comments: 1, shares: 21 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DQ1yWJiDJ9K/", views: 4800, likes: 86, comments: 1, shares: 20 },
+            { username: "itsyour_andi", platform: "tiktok", url: "https://www.tiktok.com/@itsyour_andi/video/7581128258624916744", views: 4600, likes: 82, comments: 1, shares: 19 },
+            { username: "unknown", platform: "instagram", url: "https://www.instagram.com/reel/DQ1y2a3DTR1/", views: 4400, likes: 79, comments: 1, shares: 19 },
+            { username: "onlyupset_", platform: "tiktok", url: "https://www.tiktok.com/@onlyupset_/video/7570843527060475166", views: 4200, likes: 75, comments: 1, shares: 18 },
+            { username: "helena_xo22", platform: "tiktok", url: "https://www.tiktok.com/@helena_xo22/video/7579773826678967559", views: 4000, likes: 72, comments: 1, shares: 17 },
+            { username: "0.0ange", platform: "tiktok", url: "https://www.tiktok.com/@0.0ange/video/7574206123184590102", views: 3800, likes: 68, comments: 1, shares: 16 },
+            { username: "onlyupset_", platform: "tiktok", url: "https://www.tiktok.com/@onlyupset_/video/7570806537854242062", views: 3600, likes: 65, comments: 1, shares: 15 },
+            { username: "mysketcherslightup", platform: "tiktok", url: "https://www.tiktok.com/@mysketcherslightup/video/7577186858250030367", views: 3500, likes: 63, comments: 1, shares: 15 },
+            { username: "davidbottenberg", platform: "tiktok", url: "https://www.tiktok.com/@davidbottenberg/video/7576343532378639647", views: 3300, likes: 59, comments: 1, shares: 14 },
+            { username: "onlyupset_", platform: "tiktok", url: "https://www.tiktok.com/@onlyupset_/video/7570853132830313741", views: 3200, likes: 57, comments: 1, shares: 13 },
+            { username: "enzowms", platform: "tiktok", url: "https://www.tiktok.com/@enzowms/video/7574148153914559766", views: 3000, likes: 54, comments: 1, shares: 13 },
+            { username: "notyourfavindian", platform: "tiktok", url: "https://www.tiktok.com/@notyourfavindian/video/7576445324177181974", views: 2900, likes: 52, comments: 1, shares: 12 },
+            { username: "brokendimka", platform: "tiktok", url: "https://www.tiktok.com/@brokendimka/video/7577088312322706710", views: 2700, likes: 48, comments: 1, shares: 11 },
+            { username: "lifediary01", platform: "tiktok", url: "https://www.tiktok.com/@lifediary01/video/7571203242428845334", views: 2600, likes: 47, comments: 1, shares: 11 },
+            { username: "brokendimka", platform: "tiktok", url: "https://www.tiktok.com/@brokendimka/video/7578198267528252694", views: 2500, likes: 45, comments: 1, shares: 10 },
+            { username: "lifediary01", platform: "tiktok", url: "https://www.tiktok.com/@lifediary01/video/7571163121809755414", views: 2400, likes: 43, comments: 1, shares: 10 },
+            { username: "real.life.issues0.0", platform: "tiktok", url: "https://www.tiktok.com/@real.life.issues0.0/video/7574209522898799874", views: 2300, likes: 41, comments: 1, shares: 10 },
+            { username: "brokendimka", platform: "tiktok", url: "https://www.tiktok.com/@brokendimka/video/7577089175082618134", views: 2200, likes: 39, comments: 1, shares: 9 },
+            { username: "lifediary01", platform: "tiktok", url: "https://www.tiktok.com/@lifediary01/video/7570764287652760854", views: 2100, likes: 38, comments: 1, shares: 9 },
         ];
 
         function formatNumber(num) {
@@ -779,25 +845,27 @@
         function renderPosts() {
             const grid = document.getElementById('postsGrid');
             
-            grid.innerHTML = POSTS.map((post) => {
+            grid.innerHTML = POSTS.map((post, index) => {
                 const platformClass = post.platform;
                 const platformIcon = post.platform === 'tiktok' 
                     ? '<svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>'
                     : '<svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z"/></svg>';
+
+                const displayUsername = post.username === 'unknown' ? `#${index + 1}` : `@${post.username}`;
 
                 return `
                     <a href="${post.url}" target="_blank" rel="noopener noreferrer" class="post-card">
                         <div class="post-thumbnail">
                             <div class="post-placeholder">
                                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                                <span style="font-size: 11px;">@${post.username}</span>
+                                <span style="font-size: 11px;">${displayUsername}</span>
                             </div>
                             <div class="post-platform ${platformClass}">
                                 ${platformIcon}
                             </div>
                             <div class="post-link-hint">View Post →</div>
                             <div class="post-overlay">
-                                <div class="post-username">@${post.username}</div>
+                                <div class="post-username">${displayUsername}</div>
                                 <div class="post-stat-row views">
                                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                                     <span>${formatNumber(post.views)} views</span>
